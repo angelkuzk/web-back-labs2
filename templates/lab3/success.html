@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+    <div class="success-container">
+        <div class="success-icon">✓</div>
+        <h1>Оплата прошла успешно!</h1>
+        
+        <div class="success-message">
+            <p>Спасибо, ваш заказ оплачен на сумму <strong>{{ price }} рублей</strong>.</p>
+            <p>Ожидайте доставку в течение 15 минут.</p>
+        </div>
+
+        <div class="order-actions">
+            <a href="/lab3/order" class="back-btn">Сделать новый заказ</a>
+        </div>
+    </div>
+
+    <style>
+        .success-container {
+            text-align: center;
+            padding: 40px 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .success-icon {
+            font-size: 80px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .success-message p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .success-message strong {
+            color: #e91e63;
+            font-size: 18px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: #2196F3;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #1976D2;
+        }
+    </style>
+{% endblock %}

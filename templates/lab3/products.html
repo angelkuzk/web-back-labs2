@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+    <h1>Поиск смартфонов</h1>
+
+    <div class="search-form">
+        <form>
+            <div class="form-group">
+                <label for="min_price">Минимальная цена:</label>
+                <input type="number" id="min_price" name="min_price" 
+                       value="{{ min_price }}" 
+                       placeholder="{{ real_min_price }}"
+                       min="0">
+            </div>
+
+            <div class="form-group">
+                <label for="max_price">Максимальная цена:</label>
+                <input type="number" id="max_price" name="max_price" 
+                       value="{{ max_price }}" 
+                       placeholder="{{ real_max_price }}"
+                       min="0">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" name="search">Искать</button>
+                <button type="submit" name="reset">Сброс</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="results-info">
+        {% if filtered_count == total_count %}
+            <p>Показаны все товары ({{ total_count }} шт.)</p>
+        {% else %}
+            <p>Найдено товаров: {{ filtered_count }} из {{ total_count }}</p>
+        {% endif %}
+    </div>
+
+    {% if products %}
+        <div class="products-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <h3>{{ product.name }}</h3>
+                <div class="product-price">{{ product.price }} руб.</div>
+                <div class="product-details">
+                    <div><strong>Бренд:</strong> {{ product.brand }}</div>
+                    <div><strong>Цвет:</strong> {{ product.color }}</div>
+                    <div><strong>Память:</strong> {{ product.storage }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-results">
+            <p>Не найдено ни одного товара в заданном диапазоне цен</p>
+        </div>
+    {% endif %}
+
+    <style>
+        .search-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="number"] {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+
+        .form-actions {
+            margin-top: 15px;
+        }
+
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        button[name="search"] {
+            background: #4CAF50;
+            color: white;
+        }
+
+        button[name="reset"] {
+            background: #f44336;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .results-info {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #e3f2fd;
+            border-radius: 4px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            background: white;
+        }
+
+        .product-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+
+        .product-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #e91e63;
+            margin: 10px 0;
+        }
+
+        .product-details div {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            background: #ffebee;
+            border-radius: 8px;
+            color: #c62828;
+        }
+    </style>
+{% endblock %}

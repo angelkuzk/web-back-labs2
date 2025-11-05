@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+    <h1>Железнодорожный билет</h1>
+
+    <form>
+        <div>
+            <label>ФИО пассажира:</label>
+            <input type="text" name="fio" value="{{ fio or '' }}" required>
+            <span class="error">{{ errors.fio }}</span>
+        </div>
+
+        <div>
+            <label>Полка:</label>
+            <select name="shelf" required>
+                <option value="">Выберите полку</option>
+                <option value="lower" {% if shelf == 'lower' %}selected{% endif %}>Нижняя</option>
+                <option value="upper" {% if shelf == 'upper' %}selected{% endif %}>Верхняя</option>
+                <option value="upper-side" {% if shelf == 'upper-side' %}selected{% endif %}>Верхняя боковая</option>
+                <option value="lower-side" {% if shelf == 'lower-side' %}selected{% endif %}>Нижняя боковая</option>
+            </select>
+            <span class="error">{{ errors.shelf }}</span>
+        </div>
+
+        <div>
+            <label>
+                <input type="checkbox" name="bedding" {% if bedding == 'on' %}checked{% endif %}>
+                С бельём (+75 руб.)
+            </label>
+        </div>
+
+        <div>
+            <label>
+                <input type="checkbox" name="baggage" {% if baggage == 'on' %}checked{% endif %}>
+                С багажом (+250 руб.)
+            </label>
+        </div>
+
+        <div>
+            <label>Возраст:</label>
+            <input type="number" name="age" value="{{ age or '' }}" min="1" max="120" required>
+            <span class="error">{{ errors.age }}</span>
+        </div>
+
+        <div>
+            <label>Пункт выезда:</label>
+            <input type="text" name="departure" value="{{ departure or '' }}" required>
+            <span class="error">{{ errors.departure }}</span>
+        </div>
+
+        <div>
+            <label>Пункт назначения:</label>
+            <input type="text" name="destination" value="{{ destination or '' }}" required>
+            <span class="error">{{ errors.destination }}</span>
+        </div>
+
+        <div>
+            <label>Дата поездки:</label>
+            <input type="date" name="date" value="{{ date or '' }}" required>
+            <span class="error">{{ errors.date }}</span>
+        </div>
+
+        <div>
+            <label>
+                <input type="checkbox" name="insurance" {% if insurance == 'on' %}checked{% endif %}>
+                Страховка (+150 руб.)
+            </label>
+        </div>
+
+        <div>
+            <button type="submit">Оформить билет</button>
+        </div>
+    </form>
+    <style>
+        form div {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 300px;
+        }
+        
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+{% endblock %}

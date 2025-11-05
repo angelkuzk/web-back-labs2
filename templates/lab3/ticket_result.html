@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+    <h1>Железнодорожный билет</h1>
+
+    <div class="ticket">
+        <div class="ticket-header">
+            <h2>Железнодорожный билет</h2>
+            <div class="ticket-type">{{ ticket_type }}</div>
+        </div>
+
+        <div class="ticket-info">
+            <div><strong>ФИО пассажира:</strong> {{ fio }}</div>
+            <div><strong>Возраст:</strong> {{ age }} лет</div>
+            <div><strong>Маршрут:</strong> {{ departure }} → {{ destination }}</div>
+            <div><strong>Дата поездки:</strong> {{ date }}</div>
+            <div><strong>Полка:</strong> 
+                {% if shelf == 'lower' %}Нижняя
+                {% elif shelf == 'upper' %}Верхняя
+                {% elif shelf == 'upper-side' %}Верхняя боковая
+                {% elif shelf == 'lower-side' %}Нижняя боковая
+                {% endif %}
+            </div>
+            <div><strong>Дополнительные услуги:</strong>
+                {% if bedding == 'on' %}Бельё{% endif %}
+                {% if baggage == 'on' %}{% if bedding == 'on' %}, {% endif %}Багаж{% endif %}
+                {% if insurance == 'on' %}{% if bedding == 'on' or baggage == 'on' %}, {% endif %}Страховка{% endif %}
+                {% if bedding != 'on' and baggage != 'on' and insurance != 'on' %}Нет{% endif %}
+            </div>
+        </div>
+
+        <div class="ticket-price">
+            <h3>Стоимость: {{ total_price }} руб.</h3>
+        </div>
+
+        <div class="ticket-actions">
+            <a href="/lab3/ticket">Оформить новый билет</a>
+        </div>
+    </div>
+    <style>
+        .ticket {
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+        }
+        
+        .ticket-header {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .ticket-type {
+            background: #ffeb3b;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .ticket-info div {
+            margin: 8px 0;
+            padding: 5px;
+        }
+        
+        .ticket-price {
+            text-align: center;
+            border-top: 2px solid #333;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        
+        .ticket-price h3 {
+            color: #e91e63;
+            font-size: 24px;
+        }
+        
+        .ticket-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .ticket-actions a {
+            color: #2196F3;
+            text-decoration: none;
+        }
+        
+        .ticket-actions a:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}

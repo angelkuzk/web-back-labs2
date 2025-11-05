@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ангелина Кузнецова. Лабораторная работа {{ number }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
+    <header>
+        WEB-программирование, часть 2. {% if lab_num %}Лабораторная работа 2{% endif %}
+    </header>
+
+    <main>
+        5 + 2 = {{ 5 + 2 }}<br>
+        11 * 28 = {{ 11 * 28 }}<br>
+        3528 - 759 = {{ 3528 - 759 }}<br>
+        8452 / 793 = {{ 8452 / 793 }}<br>
+        45<sup>8</sup> = {{ 45 ** 8}}<br>
+        <ul>
+            {% for f in fruits %}
+            <li>{{ loop.index }} - {{ f.name }}: {{ f.price }} &#8381;</li>
+            {% endfor %}
+        </ul>
+    </main>
+    
+    <footer>
+        &copy; 
+        {% if name %}
+            {{ name }}, 
+        {% else %}
+            Анонимус,
+        {% endif %}
+        {% if group %}
+            {{ group }}, 
+        {% else %}
+            Группа неизвестна,
+        {% endif %}
+        {% if course %}
+            {{ course }}, 
+        {% else %}
+            Курс неизвестен,
+        {% endif %}
+        2025
+    </footer>
+</body>
+</html>

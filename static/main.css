@@ -1,0 +1,120 @@
+body {
+    background-color: #fef5f9;
+    color: #5a4a54;
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background: linear-gradient(135deg, #f8d0e3, #f4b6d0);
+    color: #5a4a54;
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(244, 182, 208, 0.2);
+}
+
+main {
+    background-color: #fefefe;
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f8e1ec;
+    flex: 1;
+}
+
+footer {
+    background: linear-gradient(135deg, #e8c3d4, #d8aec6);
+    color: #5a4a54;
+    padding: 15px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(216, 174, 198, 0.2);
+    font-size: 14px;
+    margin-top: auto;
+}
+
+h1 {
+    color: #c98ba6;
+    text-align: center;
+}
+
+h2, h3 {
+    color: #d4a5bb;
+}
+
+img {
+    width: 400px;
+    height: 300px;
+    display: block;
+    margin: 0 auto;
+    border: 2px solid #f4d0e3;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(244, 208, 227, 0.3);
+}
+
+.error {
+    color: #e8a8c5;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 5px;
+    display: block;
+}
+
+/* Дополнительные стили для ссылок */
+a {
+    color: #d4a5bb;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #e8b7cc;
+    text-decoration: underline;
+}
+
+/* Стили для кнопок и навигации */
+nav a {
+    background-color: #f4d0e3;
+    color: #5a4a54;
+    padding: 8px 15px;
+    border-radius: 5px;
+    margin: 0 5px;
+    transition: background-color 0.3s ease;
+}
+
+nav a:hover {
+    background-color: #e8c3d4;
+    text-decoration: none;
+}
+
+/* Стили для списков */
+ul, ol {
+    color: #5a4a54;
+}
+
+li {
+    margin-bottom: 8px;
+}
+
+/* Стили для таблиц и других элементов */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid #f4d0e3;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f8e1ec;
+    color: #5a4a54;
+}

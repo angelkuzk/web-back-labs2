@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ангелина Кузнецова. {% block lab %}{% endblock %}</title>
+    
+    <!-- Стили (ОДИН раз) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    
+    <!-- Фавиконки с принудительным обновлением кэша -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}?v=2" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}?v=2" type="image/x-icon">
+    
+</head>
+<body>
+    <header>
+        WEB-программирование, часть 2. {{ self.lab() }}
+        <nav style="float: right;">
+            <a href="/">Главная страница</a> 
+            <a href="/lab1/">Лабораторная работа 1</a>
+            <a href="/lab2/">Лабораторная работа 2</a>
+            <a href="/lab3/">Лабораторная работа 3</a>
+        </nav>
+    </header>
+
+    <main>
+        {% block main %}{% endblock %}
+    </main>
+
+    <footer>
+        &copy; Ангелина Кузнецова, ФБИ-33, 3 курс, 2025
+    </footer>
+</body>
+</html>

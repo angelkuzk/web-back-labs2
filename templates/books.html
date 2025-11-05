@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ангелина Кузнецова. Книги</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='images/lab1/main.css') }}">
+</head>
+<body>
+    <header>
+        WEB-программирование, часть 2. Лабораторная работа 2
+    </header>
+
+    <h1>Список книг</h1>
+    
+    <div class="stats">
+        <strong>Всего книг в каталоге: {{ books|length }}</strong> 
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Автор</th>
+                <th>Название книги</th>
+                <th>Жанр</th>
+                <th>Страниц</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td class="book-author">{{ book.author }}</td>
+                <td class="book-title">{{ book.title }}</td>
+                <td><span class="book-genre">{{ book.genre }}</span></td>
+                <td class="book-pages">{{ book.pages }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <footer>
+        &copy; Ангелина Кузнецова, ФБИ-33, 3 курс, 2025
+    </footer>
+</body>
+</html>

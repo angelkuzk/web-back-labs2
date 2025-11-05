@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ангелина Кузнецова. Список цветов</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+</head>
+<body>
+    <header>
+        WEB-программирование, часть 2. Лабораторная работа 2
+    </header>
+    
+    <h1>Список цветов</h1>
+
+    <table border="1" style="border-collapse: collapse; width: 100%; margin: 20px 0;">
+        <tr>
+            <th>№</th>
+            <th>Название</th>
+            <th>Цена</th>
+            <th>Действие</th>
+        </tr>
+        {% for flower in flowers %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ flower.name }}</td>
+            <td>{{ flower.price }} руб</td>
+            <td>
+                <a href="{{ url_for('del_flower', flower_id=loop.index0) }}" style="color: red;">удалить</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="4" style="text-align: center;">Нет цветов в списке</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div style="margin: 20px 0;">
+        <a href="{{ url_for('clear_flowers') }}" style="color: red; font-weight: bold;">Удалить все цветы</a>
+    </div>
+
+    <div style="margin: 20px 0;">
+        <h3>Добавить цветок:</h3>
+        <form method="post" action="{{ url_for('add_flower') }}">
+            <input type="text" name="name" placeholder="Название цветка" required>
+            <button type="submit">добавить</button>
+        </form>
+    </div>
+
+    <a href="{{ url_for('flowers_list') }}">Обновить список</a>
+
+    <footer>
+        &copy; Ангелина Кузнецова, ФБИ-33, 3 курс, 2025
+    </footer>
+</body>
+</html>

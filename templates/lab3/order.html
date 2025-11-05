@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+    <h1>Заказ напитка</h1>
+    
+    <form action="/lab3/pay">
+        <div class="form-section">
+            <h2>Напиток:</h2>
+            <label class="radio-label">
+                <input type="radio" value="coffee" name="drink" checked>
+                <span class="drink-name">Кофе</span>
+                <span class="price">120 руб.</span>
+            </label>
+            <label class="radio-label">
+                <input type="radio" value="black-tea" name="drink">
+                <span class="drink-name">Черный чай</span>
+                <span class="price">80 руб.</span>
+            </label>
+            <label class="radio-label">
+                <input type="radio" value="green-tea" name="drink">
+                <span class="drink-name">Зеленый чай</span>
+                <span class="price">70 руб.</span>
+            </label>
+        </div>
+
+        <div class="form-section">
+            <h2>Добавки:</h2>
+            <label class="checkbox-label">
+                <input type="checkbox" name="milk">
+                <span class="addition-name">Молоко</span>
+                <span class="price">+30 руб.</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" name="sugar">
+                <span class="addition-name">Сахар</span>
+                <span class="price">+10 руб.</span>
+            </label>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="order-btn">Заказать</button>
+        </div>
+    </form>
+
+    <style>
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+
+        .form-section h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .radio-label, .checkbox-label {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .radio-label:hover, .checkbox-label:hover {
+            background: #e3f2fd;
+        }
+
+        .drink-name, .addition-name {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .price {
+            color: #e91e63;
+            font-weight: bold;
+        }
+
+        .form-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .order-btn {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .order-btn:hover {
+            background: #45a049;
+        }
+
+        input[type="radio"], input[type="checkbox"] {
+            margin-right: 10px;
+        }
+    </style>
+{% endblock %}
