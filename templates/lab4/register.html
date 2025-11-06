@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block lab %}Регистрация{% endblock %}
+
+{% block main %}
+    <h1>Регистрация</h1>
+    
+    <form method="post">
+        <div style="margin-bottom: 15px;">
+            <label for="login">Логин:</label>
+            <input type="text" id="login" name="login" value="{{ login if login }}" required>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="name">Имя:</label>
+            <input type="text" id="name" name="name" value="{{ name if name }}" required>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="password_confirm">Подтверждение пароля:</label>
+            <input type="password" id="password_confirm" name="password_confirm" required>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="gender">Пол:</label>
+            <select id="gender" name="gender">
+                <option value="male">Мужской</option>
+                <option value="female">Женский</option>
+            </select>
+        </div>
+        
+        {% if error %}
+            <div style="color: red; font-weight: bold; margin: 10px 0;">{{ error }}</div>
+        {% endif %}
+        
+        <div>
+            <button type="submit">Зарегистрироваться</button>
+            <button type="reset">Очистить</button>
+        </div>
+    </form>
+    
+    <div style="margin-top: 20px;">
+        <a href="/lab4/login">Уже есть аккаунт? Войти</a>
+    </div>
+    
+    <div style="margin-top: 10px;">
+        <a href="/lab4/">Вернуться к списку сделанных страниц</a>
+    </div>
+{% endblock %}
