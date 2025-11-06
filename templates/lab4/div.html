@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block lab %}Деление чисел{% endblock %}
+
+{% block main %}
+    <h1>Деление чисел</h1>
+    
+    {% if error %}
+        <div style="color: red; margin-bottom: 15px;">{{ error }}</div>
+    {% endif %}
+    
+    <form method="post" style="display: flex; align-items: center; gap: 10px;">
+        <input type="text" name="x1" value="{{ x1 if x1 }}" style="width: 80px; text-align: center;">
+        <span>/</span>
+        <input type="text" name="x2" value="{{ x2 if x2 }}" style="width: 80px; text-align: center;">
+        <button type="submit" style="width: 40px;">=</button>
+        {% if result %}
+            <span>{{ result }}</span>
+        {% endif %}
+    </form>
+    
+    <div style="margin-top: 20px;">
+        <a href="/lab4/div">Вернуться назад к форме</a>
+    </div>
+{% endblock %}
