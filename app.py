@@ -3,6 +3,8 @@ import datetime
 
 app = Flask(__name__)
 
+app.secret_key = 'секретно-секретный секрет'
+
 from lab3 import lab3
 from lab4 import lab4
 
