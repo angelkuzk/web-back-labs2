@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block lab %}Холодильник{% endblock %}
+
+{% block main %}
+    <h1>Управление холодильником</h1>
+    
+    <form method="post">
+        <div style="margin-bottom: 15px;">
+            <label for="temperature">Установите температуру (°C):</label>
+            <input type="number" id="temperature" name="temperature" value="{{ temperature if temperature }}" 
+                   style="width: 100px; margin-left: 10px;">
+        </div>
+        <button type="submit">Установить температуру</button>
+    </form>
+    
+    {% if error %}
+        <div style="color: red; font-weight: bold; margin-top: 20px; padding: 10px; background-color: #ffe6e6; border-radius: 5px;">
+            {{ error }}
+        </div>
+    {% endif %}
+    
+    {% if message %}
+        <div style="margin-top: 20px;">
+            <div style="font-size: 1.2em; font-weight: bold; color: #2c3e50; margin-bottom: 15px;">
+                {{ message }}
+            </div>
+            {% if snowflakes > 0 %}
+                <div style="font-size: 24px; color: #3498db;">
+                    {% for i in range(snowflakes) %}
+                        ❄️
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+    
+    <div style="margin-top: 30px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
+        <strong>Диапазоны температур:</strong>
+        <ul style="margin: 10px 0;">
+            <li>-12°C — -9°C: ❄️❄️❄️</li>
+            <li>-8°C — -5°C: ❄️❄️</li>
+            <li>-4°C — -1°C: ❄️</li>
+        </ul>
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <a href="/lab4/">Вернуться к списку сделанных страниц</a>
+    </div>
+{% endblock %}
