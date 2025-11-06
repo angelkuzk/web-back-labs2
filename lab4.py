@@ -197,3 +197,64 @@ def fridge():
         message = f'Установлена температура: {temp}°C'
     
     return render_template('lab4/fridge.html', message=message, snowflakes=snowflakes, temperature=temperature)
+
+
+@lab4.route('/lab4/zerno', methods=['GET', 'POST'])
+def grain():
+    if request.method == 'GET':
+        return render_template('lab4/zerno.html')
+    
+    grain_type = request.form.get('grain_type')
+    weight = request.form.get('weight')
+    
+    prices = {
+        'barley': 12000,   
+        'oats': 8500,      
+        'wheat': 9000,     
+        'rye': 15000       
+    }
+    
+    grain_names = {
+        'barley': 'ячмень',
+        'oats': 'овёс', 
+        'wheat': 'пшеница',
+        'rye': 'рожь'
+    }
+    
+    if not weight:
+        return render_template('lab4/zerno.html', error='Ошибка: не указан вес')
+    
+    try:
+        weight_num = float(weight)
+    except ValueError:
+        return render_template('lab4/zerno.html', error='Ошибка: вес должен быть числом')
+    
+    if weight_num <= 0:
+        return render_template('lab4/zerno.html', error='Ошибка: вес должен быть больше 0')
+    
+    if weight_num > 100:
+        return render_template('lab4/zerno.html', error='Такого объёма сейчас нет в наличии')
+    
+    price_per_ton = prices.get(grain_type)
+    if not price_per_ton:
+        return render_template('lab4/zerno.html', error='Ошибка: не выбран тип зерна')
+    
+    total = weight_num * price_per_ton
+    discount = 0
+    discount_applied = False
+    
+    if weight_num > 10:
+        discount = total * 0.1
+        total -= discount
+        discount_applied = True
+    
+    grain_name = grain_names.get(grain_type)
+    
+    return render_template('lab4/zerno.html', 
+                         success=True,
+                         grain_name=grain_name,
+                         weight=weight_num,
+                         total=total,
+                         discount_applied=discount_applied,
+                         discount=discount,
+                         grain_type=grain_type)
