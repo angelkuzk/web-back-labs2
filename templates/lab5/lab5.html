@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+    <head>
+        <style>
+            .styled-div {
+                background-color: #ffffff;
+                border-radius: 10px;
+                box-shadow: 0.4px 8px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                width: 300px;
+                margin: 5px;
+                text-align: center;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .styled-div:hover {
+                transform: translateY(-5px);
+                box-shadow: 0.8px 16px rgba(0, 0, 0, 0.2);
+            }
+            .styled-div h2 {
+                color: #333333;
+                margin-bottom: 10px;
+            }
+            .styled-div p {
+                color: #666666;
+                line-height: 1.5;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>База знаний</h1>
+        <h2>Пользователь - {{username}}</h2>
+        <div class="styled-div"><a href="/lab5/login">Войти</a></div>
+        <div class="styled-div"><a href="/lab5/register">Зарегистрироваться</a></div>
+        <div class="styled-div"><a href="/lab5/list">Список статей</a></div>
+        <div class="styled-div"><a href="/lab5/create">Создать статью</a></div>
+    </body>
+{% endblock %}

@@ -7,9 +7,11 @@ app.secret_key = 'секретно-секретный секрет'
 
 from lab3 import lab3
 from lab4 import lab4
+from lab5 import lab5
 
 app.register_blueprint(lab3)
 app.register_blueprint(lab4)
+app.register_blueprint(lab5)
 
 access_log = []
 
@@ -367,6 +369,7 @@ def index():
                     <li><a href="/lab2">Вторая лабораторная</a></li>
                     <li><a href="/lab3">Третья лабораторная</a></li>
                     <li><a href="/lab4">Четвертая лабораторная</a></li>
+                    <li><a href="/lab5">Пятая лабораторная</a></li>
                 </ul>
             </nav>
         </main>
