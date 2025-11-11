@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+    <div style="text-align: center; padding: 50px;">
+        <h1 style="color: #4CAF50;">Поздравляем с успешной регистрацией!</h1>
+        
+        <div style="background-color: #f0f8f0; border: 2px solid #4CAF50; 
+                   border-radius: 10px; padding: 30px; margin: 20px auto; 
+                   max-width: 500px;">
+            <h2 style="color: #2E7D32;">Регистрация завершена успешно!</h2>
+            <p style="font-size: 18px; color: #555;">
+                Теперь вы можете пользоваться всеми возможностями нашей базы знаний.
+            </p>
+            
+            <div style="margin-top: 30px;">
+                <a href="/lab5" 
+                   style="display: inline-block; 
+                          background-color: #4CAF50; 
+                          color: white; 
+                          padding: 12px 24px; 
+                          text-decoration: none; 
+                          border-radius: 5px; 
+                          font-size: 16px;
+                          transition: background-color 0.3s;">
+                    Перейти к базе знаний
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
