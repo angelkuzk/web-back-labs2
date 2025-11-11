@@ -95,3 +95,40 @@ def login():
         return render_template('lab5/login.html', error=f'Ошибка подключения к БД: {str(e)}')
     except Exception as e:
         return render_template('lab5/login.html', error=f'Ошибка базы данных: {str(e)}')
+    
+
+@lab5.route('/lab5/create', methods = ['GET', 'POST'])
+def create():
+    login=session.get('login')
+    if not login:
+        return redirect('/lab5/login')
+
+    if request.method == 'GET':
+        return render_template('/lab5/create_article.html')
+
+    title = request.form.get('title')
+    article_text = request.form.get('article_text')
+
+    if not (title and article_text):
+        return render_template('/lab5/create_article.html', error='Заполните все поля')
+
+    try:
+        conn, cur = db_connect()
+
+        cur.execute("SELECT * FROM users WHERE login=%s;", (login, ))
+        user = cur.fetchone()
+
+        if not user:
+            db_close(conn, cur)
+            return redirect('/lab5/login')
+        
+        user_id = user["id"]
+
+        cur.execute(f"INSERT INTO articles(user_id, title, article_text) \
+                    VALUES ({user_id}, '{title}', '{article_text}');")
+
+        db_close(conn, cur)
+        return redirect('/lab5')    
+    
+    except Exception as e:
+        return render_template('/lab5/create_article.html', error=f'Ошибка базы данных: {str(e)}')
