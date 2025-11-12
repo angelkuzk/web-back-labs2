@@ -3,12 +3,102 @@
 {% block lab %}Лабораторная работа 5{% endblock %}
 
 {% block main %}
-    
-    <h1>Статьи</h1>
-    
-    {% for article in articles %}
-        <h2>{{ article['title'] }}</h2>
-        <blockquote>{{ article['article_text'] }}</blockquote>
-    {% endfor %}
-    
+    <style>
+    .article-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .btn-edit {
+        background-color: #007bff;
+        color: white;
+        border-color: #0056b3;
+    }
+
+    .btn-delete {
+        background-color: #dc3545;
+        color: white;
+        border-color: #c82333;
+    }
+
+    .actions {
+        display: flex;
+        gap: 10px;
+        margin: 15px 0;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 14px;
+        border: 2px solid;
+    }
+
+    .btn-primary {
+        background-color: #4CAF50;
+        color: white;
+        border-color: #45a049;
+    }
+
+    .btn-secondary {
+        background-color: #f1f1f1;
+        color: black;
+        border-color: #ddd;
+    }
+    </style>
+
+    <div class="container">
+        <h1>Мои статьи</h1>
+        
+        {% if no_articles %}
+            <div class="no-articles">
+                <h3>У вас пока нет статей</h3>
+                <p>Создайте свою первую статью!</p>
+                <a href="/lab5/create" class="btn btn-primary">Создать статью</a>
+            </div>
+        {% else %}
+            <div class="articles-list">
+                {% for article in articles %}
+                    <div class="article-card">
+                        <div class="article-header">
+                            <h3>{{ article.title }}</h3>
+                            <div class="article-actions">
+                                <a href="/lab5/edit/{{ article.id }}" class="btn btn-edit">Редактировать</a>
+                                <a href="/lab5/delete/{{ article.id }}" class="btn btn-delete" 
+                                onclick="return confirm('Вы уверены, что хотите удалить эту статью?')">Удалить</a>
+                            </div>
+                        </div>
+                        <div class="article-content">
+                            <p>{{ article.article_text[:200] }}{% if article.article_text|length > 200 %}...{% endif %}</p>
+                        </div>
+                        <div class="article-footer">
+                            <span class="article-meta">
+                                {% if article.is_public %}
+                                    <span class="badge public">Публичная</span>
+                                {% else %}
+                                    <span class="badge private">Приватная</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <div class="actions">
+                <a href="/lab5/create" class="btn btn-primary">Создать новую статью</a>
+                <a href="/lab5/" class="btn btn-secondary">На главную</a>
+            </div>
+        {% endif %}   
 {% endblock %}

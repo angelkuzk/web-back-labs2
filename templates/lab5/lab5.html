@@ -27,11 +27,27 @@
                 color: #666666;
                 line-height: 1.5;
             }
+            .logout-btn {
+                background-color: #dc3545;
+                color: white;
+                padding: 8px 16px;
+                text-decoration: none;
+                border-radius: 4px;
+                font-size: 14px;
+            }
+            .logout-btn:hover {
+                background-color: #c82333;
+            }
         </style>
     </head>
     <body>
         <h1>База знаний</h1>
-        <h2>Пользователь - {{username}}</h2>
+        {% if username and username != 'anonymous' %}
+            <div class="user-info">
+                <strong>Пользователь:</strong> {{ username }}
+                <a href="/lab5/logout" class="logout-btn">Выйти</a>
+            </div>
+        {% endif %}
         <div class="styled-div"><a href="/lab5/login">Войти</a></div>
         <div class="styled-div"><a href="/lab5/register">Зарегистрироваться</a></div>
         <div class="styled-div"><a href="/lab5/list">Список статей</a></div>

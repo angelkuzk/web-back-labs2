@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+    <div class="container">
+        <h1>Редактирование статьи</h1>
+        
+        {% if error %}
+            <div class="error-message">
+                {{ error }}
+            </div>
+        {% endif %}
+        
+        <form method="POST" class="article-form">
+            <div class="form-group">
+                <label for="title">Название статьи:</label>
+                <input type="text" id="title" name="title" value="{{ article.title }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="article_text">Текст статьи:</label>
+                <textarea id="article_text" name="article_text" rows="10" required>{{ article.article_text }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="is_public" {% if article.is_public %}checked{% endif %}>
+                    Сделать статью публичной
+                </label>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                <a href="/lab5/list" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}
