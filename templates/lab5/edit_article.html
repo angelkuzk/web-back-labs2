@@ -22,11 +22,18 @@
                 <label for="article_text">Текст статьи:</label>
                 <textarea id="article_text" name="article_text" rows="10" required>{{ article.article_text }}</textarea>
             </div>
+
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="is_favorite" {% if article.is_favorite %}checked{% endif %}>
+                    Избранная статья
+                </label>
+            </div>
             
             <div class="form-group">
                 <label class="checkbox-label">
                     <input type="checkbox" name="is_public" {% if article.is_public %}checked{% endif %}>
-                    Сделать статью публичной
+                    Публичная статья
                 </label>
             </div>
             

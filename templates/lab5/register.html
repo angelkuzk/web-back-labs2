@@ -19,9 +19,20 @@
 
         <div>
             <label>
+                Реальное имя:
+                <input type="text" name="real_name" value="{{ request.form.real_name if request.form.real_name }}">
+            </label>
+        </div>
+
+        <div>
+            <label>
                 Пароль: <input type="password" name="password">
             </label>
         </div>
         <button type="submit">Зарегистрироваться</button>
     </form>
+
+    <div>
+        <a href="/lab5/login">Есть аккаунт? Войдите</a>
+    </div>
 {% endblock %}

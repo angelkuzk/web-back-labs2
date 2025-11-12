@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+    <h1>Список пользователей</h1>
+
+    <div class="users-list">
+        {% for user in users %}
+            <div class="user-card">
+                <strong>Логин:</strong> {{ user.login }}<br>
+                <strong>Имя:</strong> {{ user.real_name or 'Не указано' }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <div style="margin-top: 20px;">
+        <a href="/lab5/" class="btn">На главную</a>
+    </div>
+
+    <style>
+        .users-list {
+            display: grid;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .user-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+{% endblock %}

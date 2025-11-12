@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+    <h1>Изменение профиля</h1>
+
+    {% if error %}
+        <div style="color: red; background-color: #ffe6e6; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    {% if success %}
+        <div style="color: green; background-color: #e6ffe6; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+            {{ success }}
+        </div>
+    {% endif %}
+
+    <form method="post">
+        <div>
+            <label>
+                Новое имя:
+                <input type="text" name="real_name" value="{{ current_real_name }}">
+            </label>
+        </div>
+
+        <div>
+            <label>
+                Новый пароль:
+                <input type="password" name="new_password">
+            </label>
+        </div>
+
+        <div>
+            <label>
+                Подтверждение пароля:
+                <input type="password" name="confirm_password">
+            </label>
+        </div>
+
+        <div>
+            <button type="submit">Сохранить изменения</button>
+        </div>
+    </form>
+
+    <div style="margin-top: 20px;">
+        <a href="/lab5/" class="btn">На главную</a>
+    </div>
+{% endblock %}
