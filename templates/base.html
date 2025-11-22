@@ -11,6 +11,7 @@
     <!-- Фавиконки с принудительным обновлением кэша -->
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}?v=2" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}?v=2" type="image/x-icon">
+    {% block script %}{% endblock %}
     
 </head>
 <body>
