@@ -2,9 +2,213 @@
 
 {% block lab %}Лабораторная работа 6{% endblock %}
 
+{% block style %}
+<style>
+.office-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin: 25px 0;
+}
+
+.office-card {
+    background-color: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.office-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.office-header {
+    color: #2c3e50;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.office-details {
+    flex-grow: 1;
+    margin-bottom: 20px;
+}
+
+.office-status {
+    font-size: 16px;
+    margin: 12px 0;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.office-price {
+    color: #ed8fb3;
+    font-weight: bold;
+    font-size: 18px;
+    margin: 12px 0;
+    text-align: center;
+    padding: 10px;
+    background-color: #f8fff9;
+    border-radius: 6px;
+    border: 1px solid #d4b8c5;
+}
+
+.office-buttons {
+    margin-top: auto;
+    display: flex;
+    gap: 12px;
+}
+
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    flex: 1;
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: #ed8fb3;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #f73c84;
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+}
+
+.btn:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.summary-card {
+    background-color: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 30px;
+    margin-top: 35px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.summary-card h3 {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+.total-cost {
+    font-size: 24px;
+    color: #ed8fb3;
+    font-weight: bold;
+    background-color: #f8fff9;
+    padding: 15px;
+    border-radius: 8px;
+    display: inline-block;
+    border: 2px solid #d4b8c5;
+}
+
+.auth-message {
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 12px;
+    padding: 30px;
+    margin-top: 25px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.auth-message a {
+    color: #ed8fb3;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.auth-message a:hover {
+    text-decoration: underline;
+}
+
+.status-free {
+    color: #ed8fb3;
+    background-color: #f0f9f0;
+    border: 1px solid #d4b8c5;
+}
+
+.status-occupied {
+    color: #e74c3c;
+    background-color: #fdf2f2;
+    border: 1px solid #f8d7da;
+}
+
+.tenant-name {
+    font-weight: bold;
+    color: #8e44ad;
+    display: block;
+    margin-top: 5px;
+}
+
+.page-description {
+    text-align: center;
+    color: #5a6c7d;
+    margin-bottom: 35px;
+    font-size: 17px;
+    line-height: 1.6;
+}
+
+.page-title {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 32px;
+}
+
+@media (max-width: 768px) {
+    .office-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .office-buttons {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}
+
 {% block script %}
 <script>
-
 const currentUser = "{{ login or '' }}";
 
 function getOfficeList() {
@@ -20,41 +224,53 @@ function getOfficeList() {
         body: JSON.stringify(json)
     })
     .then(function(response) {
-        return response.json()
+        return response.json();
     })
     .then(function(data) {
-        const office_list = data.result;
-        const ul = document.getElementById('office-list');
-        ul.innerHTML = '';
+        const officeList = document.getElementById('office-list');
+        officeList.innerHTML = '';
 
                 let totalCost = 0;
 
-        for(let i = 0; i < office_list.length; i++) {
-            const office = office_list[i];  
-            const li = document.createElement('li');
-            li.innerHTML = `Офис ${office.number}: ${office.tenant || 'свободен'} - ${office.price} руб./мес.<br>`;
-
-            if (!office.tenant) {
-                const bookingButton = document.createElement('button');
-                bookingButton.innerText = 'зарезервировать';
-                bookingButton.onclick = function() {booking(office.number)};
-                li.appendChild(bookingButton);
-            }
-
-            if (office.tenant && office.tenant === currentUser) {
-                const cancelButton = document.createElement('button');
-                cancelButton.innerText = 'освободить';
-                cancelButton.style.marginLeft = '10px';
-                cancelButton.onclick = function() {cancellation(office.number)};
-                li.appendChild(cancelButton);
-
+        for (let i = 0; i < data.result.length; i++) {
+            const office = data.result[i];
+            const card = document.createElement('div');
+            card.className = 'office-card';
+            
+            const isOccupied = office.tenant;
+            const isMyOffice = office.tenant === currentUser;
+            
+            card.innerHTML = `
+                <div class="office-header">Офис №${office.number}</div>
+                <div class="office-details">
+                    <div class="office-status ${isOccupied ? 'status-occupied' : 'status-free'}">
+                        ${isOccupied ? `Занят <span class="tenant-name">${office.tenant}</span>` : 'Свободен'}
+                    </div>
+                    <div class="office-price">${office.price} руб./мес.</div>
+                </div>
+                <div class="office-buttons">
+                    ${!isOccupied ? 
+                        `<button class="btn btn-primary" onclick="booking(${office.number})">Забронировать</button>` : 
+                        ''
+                    }
+                    ${isMyOffice ? 
+                        `<button class="btn btn-danger" onclick="cancellation(${office.number})">Освободить</button>` : 
+                        ''
+                    }
+                </div>
+            `;
+            
+            officeList.appendChild(card);
+            
+            if (isMyOffice) {
                 totalCost += office.price;
             }
-
-            ul.appendChild(li);
         } 
 
         document.getElementById('total-cost').textContent = totalCost;
+    })
+    .catch(function(error) {
+        console.error('Error:', error);
     });
 }
 
@@ -72,32 +288,26 @@ function booking(officeNumber) {
         body: JSON.stringify(json)
     })
     .then(function(response) {
-        return response.json()
+        return response.json();
     })
     .then(function(data) {
-        if(data.error) {
-            switch(data.error.code) {
-                case 1:
-                    alert('Вы не авторизованы, пожалуйста, авторизуйтесь');
-                    break;
-                case 2:
-                    alert('Офис уже арендуется');
-                    break;
-                case -32601:
-                    alert('Странная ошибка');
-                    break;
-            }
-        }
-        else {
-            document.getElementById('office-list').innerHTML = '';
+        if (data.error) {
+            handleError(data.error);
+        } else {
             getOfficeList();
         }
+    })
+    .catch(function(error) {
+        console.error('Error:', error);
+        alert('Произошла ошибка при бронировании');
     });
-
 }
 
-
 function cancellation(officeNumber) {
+    if (!confirm('Вы уверены, что хотите освободить этот офис?')) {
+        return;
+    }
+    
     const url = '/lab6/json-rpc-api/';
     const json = {
         'jsonrpc': '2.0',
@@ -111,31 +321,40 @@ function cancellation(officeNumber) {
         body: JSON.stringify(json)
     })
     .then(function(response) {
-        return response.json()
+        return response.json();
     })
     .then(function(data) {
-        if(data.error) {
-            switch(data.error.code) {
-                case 1:
-                    alert('Вы не авторизованы, пожалуйста, авторизуйтесь');
-                    break;
-                case 3:
-                    alert('Офис не арендован');
-                    break;
-                case 4:
-                    alert('Вы не являетесь арендатором этого офиса');
-                    break;
-                case -32601:
-                    alert('Странная ошибка');
-                    break;
-            }
-        }
-        else {
-            document.getElementById('office-list').innerHTML = '';
+        if (data.error) {
+            handleError(data.error);
+        } else {
             getOfficeList();
         }
+    })
+    .catch(function(error) {
+        console.error('Error:', error);
+        alert('Произошла ошибка при освобождении офиса');
     });
 }
+
+function handleError(error) {
+    switch(error.code) {
+        case 1:
+            alert('Вы не авторизованы, пожалуйста, авторизуйтесь');
+            break;
+        case 2:
+            alert('Офис уже арендуется');
+            break;
+        case 3:
+            alert('Офис не арендован');
+            break;
+        case 4:
+            alert('Вы не являетесь арендатором этого офиса');
+            break;
+        default:
+            alert('Произошла ошибка: ' + error.message);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     getOfficeList();
 });
@@ -143,15 +362,18 @@ document.addEventListener('DOMContentLoaded', function() {
 {% endblock %}
 
 {% block main %}
-    <h1>Список кабинетов</h1>
-    <ul id="office-list"></ul>
+    <h1 class="page-title">Аренда офисов</h1>
+    <p class="page-description">Выберите подходящий офис для аренды. Все офисы полностью оборудованы и готовы к работе.</p>
+    
+    <div id="office-list" class="office-container"></div>
+
     {% if login %}
-    <div style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
-        <h3>Ваша аренда</h3>
-        <p>Общая стоимость арендованных офисов: <strong><span id="total-cost">{{ total_cost }}</span> руб./мес.</strong></p>
+    <div class="summary-card">
+        <h3>Ваша текущая аренда</h3>
+        <p>Общая стоимость: <span class="total-cost" id="total-cost">{{ total_cost }}</span> руб./мес.</p>
     </div>
     {% else %}
-    <div style="margin-top: 20px; padding: 15px; background-color: #cf7fab; border-radius: 5px;">
+    <div class="auth-message">
         <p>Для бронирования офисов необходимо <a href="/lab5/">авторизоваться</a></p>
     </div>
     {% endif %}
