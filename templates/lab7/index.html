@@ -22,6 +22,96 @@
 .error-message {
     color: red;
 }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid #e0e0e0;
+}
+
+thead {
+    background-color: #c98ba6;
+    color: white;
+}
+
+th {
+    padding: 15px;
+    text-align: left;
+    font-weight: bold;
+    border-bottom: 3px solid #c98ba6;
+}
+
+td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+tbody tr:hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.3s ease;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+button {
+    background-color: #c98ba6;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+    background-color: #c98ba6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button:contains("удалить") {
+    background-color: #e74c3c;
+}
+
+button:contains("удалить"):hover {
+    background-color: #c0392b;
+}
+
+button:contains("редактировать") {
+    background-color: #f39c12;
+}
+
+button:contains("редактировать"):hover {
+    background-color: #d35400;
+}
+
+.original-title {
+    font-style: italic;
+    color: #7f8c8d;
+    font-size: 0.9em;
+}
+
+.original-title::before {
+    content: "(";
+}
+
+.original-title::after {
+    content: ")";
+}
 </style>
 {% endblock %}
 

@@ -15,8 +15,15 @@ function fillFilmList() {
             let tdYear = document.createElement('td');
             let tdActions = document.createElement('td');
 
-            tdTitle.innerText = films[i].title === films[i].title_ru ? '' : films[i].title;
             tdTitleRus.innerText = films[i].title_ru;
+            if (films[i].title && films[i].title !== films[i].title_ru) {
+                let originalSpan = document.createElement('span');
+                originalSpan.className = 'original-title';
+                originalSpan.innerText = films[i].title;
+                tdTitle.appendChild(originalSpan);
+            } else {
+                tdTitle.innerText = ''; 
+            }
             tdYear.innerText = films[i].year;
 
             let editButton = document.createElement('button');
