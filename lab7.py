@@ -65,12 +65,14 @@ films = [
 def get_films():
     return films
 
+
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['GET'])
 def get_films_by_id(id):
     if id < 0 or id >= len(films):
         return jsonify({"error": "Фильм не найден"}), 404
 
     return jsonify(films[id])
+
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['DELETE'])
 def del_film(id):
@@ -79,3 +81,13 @@ def del_film(id):
 
     del films[id]
     return '', 204
+
+
+@lab7.route('/lab7/rest-api/films/<int:id>', methods=['PUT'])
+def put_film(id):
+    if id < 0 or id >= len(films):
+        return jsonify({"error": "Фильм не найден"}), 404
+    
+    film = request.get_json()
+    film[id] = film
+    return films[id]
