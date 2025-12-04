@@ -141,7 +141,7 @@ button:contains("редактировать"):hover {
         <input type="hidden" id="id">
         <label>
             Название фильма на русском:
-            <input type="text" id="title-ru">
+           <input type="text" id="title-ru" required>
         </label><br>
 
         <label>
@@ -152,16 +152,18 @@ button:contains("редактировать"):hover {
 
         <label>
             Год выпуска:
-            <input type="number" id="year">
+            <input type="number" id="year" required>
         </label><br>
 
         <label>
             Описание:
-            <textarea id="description"></textarea>
+            <input type="number" id="year" required>
             <div id="description-error" class="error-message"></div>
         </label><br>
 
-        <button onclick="sendFilm()">Ок</button>
-        <button onclick="cancel()">Отмена</button>
+        <div style="text-align: center; margin-top: 20px;">
+            <button onclick="sendFilm()">Ок</button>
+            <button onclick="cancel()">Отмена</button>
+        </div>
     </div>
 {% endblock %}
