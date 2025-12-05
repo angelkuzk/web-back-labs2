@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, request, jsonify, abort
+from flask import Blueprint, render_template, request, jsonify
+from datetime import datetime
 
 lab7 = Blueprint('lab7', __name__)
 
@@ -60,6 +61,33 @@ films = [
     }
 ]
 
+def validate_film_data(film_data):
+    errors = {}
+    
+    title_ru = film_data.get('title_ru', '').strip()
+    if not title_ru:
+        errors['title_ru'] = 'Русское название обязательно'
+    
+    title = film_data.get('title', '').strip()
+    if not title and not title_ru:
+        errors['title'] = 'Название на оригинальном языке обязательно, если русское название пустое'
+    
+    year_str = film_data.get('year', '')
+    try:
+        year = int(year_str)
+        current_year = datetime.now().year
+        if year < 1895 or year > current_year:
+            errors['year'] = f'Год должен быть от 1895 до {current_year}'
+    except (ValueError, TypeError):
+        errors['year'] = 'Год должен быть числом'
+    
+    description = film_data.get('description', '').strip()
+    if not description:
+        errors['description'] = 'Описание обязательно'
+    elif len(description) > 2000:
+        errors['description'] = 'Описание не должно превышать 2000 символов'
+    
+    return errors
 
 @lab7.route('/lab7/rest-api/films/', methods=['GET'])
 def get_films():
@@ -93,8 +121,12 @@ def put_film(id):
     if not film_data:
         return jsonify({"error": "Не предоставлены данные для обновления"}), 400
 
-    title = film_data.get('title', '')
-    title_ru = film_data.get('title_ru', '')
+    errors = validate_film_data(film_data)
+    if errors:
+        return jsonify(errors), 400
+    
+    title = film_data.get('title', '').strip()
+    title_ru = film_data.get('title_ru', '').strip()
     if not title.strip() and title_ru.strip():
         film_data['title'] = title_ru
 
@@ -111,8 +143,12 @@ def add_film():
 
     if not film_data:
         return jsonify({"error": "Не предоставлены данные фильма"}), 400
-    title = film_data.get('title', '')
-    title_ru = film_data.get('title_ru', '')
+    errors = validate_film_data(film_data)
+    if errors:
+        return jsonify(errors), 400
+    
+    title = film_data.get('title', '').strip()
+    title_ru = film_data.get('title_ru', '').strip()
     if not title.strip() and title_ru.strip():
         film_data['title'] = title_ru
 
