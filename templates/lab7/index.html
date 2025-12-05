@@ -21,6 +21,8 @@
 }
 .error-message {
     color: red;
+    font-size: 0.9em;
+    margin-top: 5px;
 }
 table {
     width: 100%;
@@ -74,7 +76,7 @@ button {
 }
 
 button:hover {
-    background-color: #c98ba6;
+    background-color: #b87a96;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -83,19 +85,19 @@ button:active {
     transform: translateY(0);
 }
 
-button:contains("удалить") {
+button.delete-btn {
     background-color: #e74c3c;
 }
 
-button:contains("удалить"):hover {
+button.delete-btn:hover {
     background-color: #c0392b;
 }
 
-button:contains("редактировать") {
+button.edit-btn {
     background-color: #f39c12;
 }
 
-button:contains("редактировать"):hover {
+button.edit-btn:hover {
     background-color: #d35400;
 }
 
@@ -111,6 +113,29 @@ button:contains("редактировать"):hover {
 
 .original-title::after {
     content: ")";
+}
+
+textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
 </style>
 {% endblock %}
@@ -139,9 +164,10 @@ button:contains("редактировать"):hover {
 
     <div class="modal">
         <input type="hidden" id="id">
+        
         <label>
             Название фильма на русском:
-           <input type="text" id="title-ru" required>
+            <input type="text" id="title-ru" required>
             <div id="title-ru-error" class="error-message"></div>
         </label><br>
 
@@ -155,11 +181,12 @@ button:contains("редактировать"):hover {
         <label>
             Год выпуска:
             <input type="number" id="year" required>
+            <div id="year-error" class="error-message"></div>
         </label><br>
 
         <label>
             Описание:
-            <input type="number" id="year" required>
+            <textarea id="description" required></textarea>
             <div id="description-error" class="error-message"></div>
         </label><br>
 

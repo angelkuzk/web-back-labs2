@@ -3,7 +3,6 @@ from datetime import datetime
 import sqlite3
 from contextlib import closing
 
-
 lab7 = Blueprint('lab7', __name__)
 
 def init_db():
@@ -49,8 +48,7 @@ def validate_film_data(film_data):
         errors['title_ru'] = 'Русское название обязательно'
     
     title = film_data.get('title', '').strip()
-    if not title and not title_ru:
-        errors['title'] = 'Название на оригинальном языке обязательно, если русское название пустое'
+    # Если оригинальное название пустое, оно будет равно русскому названию в обработчиках
     
     year_str = film_data.get('year', '')
     try:
@@ -73,7 +71,6 @@ def validate_film_data(film_data):
 def main():
     return render_template('lab7/index.html')
 
-
 @lab7.route('/lab7/rest-api/films/', methods=['GET'])
 def get_films():
     conn = get_db_connection()
@@ -92,7 +89,6 @@ def get_films():
 
     return jsonify(films_list)
 
-
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['GET'])
 def get_films_by_id(id):
     conn = get_db_connection()
@@ -110,7 +106,6 @@ def get_films_by_id(id):
         'description': film['description']
     })
 
-
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['DELETE'])
 def del_film(id):
     conn = get_db_connection()
@@ -124,7 +119,6 @@ def del_film(id):
     conn.commit()
     conn.close()
     return '', 204
-
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['PUT'])
 def put_film(id):
@@ -143,16 +137,19 @@ def put_film(id):
 
     errors = validate_film_data(film_data)
     if errors:
+        conn.close()
         return jsonify(errors), 400
     
     title = film_data.get('title', '').strip()
     title_ru = film_data.get('title_ru', '').strip()
-    if not title.strip() and title_ru.strip():
-        film_data['title'] = title_ru
+    
+    # Если оригинальное название пустое, используем русское
+    if not title and title_ru:
+        title = title_ru
 
     conn.execute(
         'UPDATE films SET title = ?, title_ru = ?, year = ?, description = ? WHERE id = ?',
-        (film_data['title'], film_data['title_ru'], film_data['year'], film_data['description'], id)
+        (title, title_ru, film_data['year'], film_data['description'], id)
     )
     conn.commit()
 
@@ -167,26 +164,28 @@ def put_film(id):
         'description': updated_film['description']
     })
 
-
 @lab7.route('/lab7/rest-api/films/', methods=['POST'])
 def add_film():
     film_data = request.get_json()
 
     if not film_data:
         return jsonify({"error": "Не предоставлены данные фильма"}), 400
+    
     errors = validate_film_data(film_data)
     if errors:
         return jsonify(errors), 400
     
     title = film_data.get('title', '').strip()
     title_ru = film_data.get('title_ru', '').strip()
-    if not title.strip() and title_ru.strip():
-        film_data['title'] = title_ru
+    
+    # Если оригинальное название пустое, используем русское
+    if not title and title_ru:
+        title = title_ru
 
     conn = get_db_connection()
     cursor = conn.execute(
         'INSERT INTO films (title, title_ru, year, description) VALUES (?, ?, ?, ?)',
-        (film_data['title'], film_data['title_ru'], film_data['year'], film_data['description'])
+        (title, title_ru, film_data['year'], film_data['description'])
     )
     new_id = cursor.lastrowid
     conn.commit()
