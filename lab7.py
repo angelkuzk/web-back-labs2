@@ -93,6 +93,11 @@ def put_film(id):
     if not film_data:
         return jsonify({"error": "Не предоставлены данные для обновления"}), 400
 
+    title = film_data.get('title', '')
+    title_ru = film_data.get('title_ru', '')
+    if not title.strip() and title_ru.strip():
+        film_data['title'] = title_ru
+
     if 'description' not in film_data or not film_data['description'].strip():
         return jsonify({'description': 'Заполните описание'}), 400
 
@@ -106,7 +111,10 @@ def add_film():
 
     if not film_data:
         return jsonify({"error": "Не предоставлены данные фильма"}), 400
-
+    title = film_data.get('title', '')
+    title_ru = film_data.get('title_ru', '')
+    if not title.strip() and title_ru.strip():
+        film_data['title'] = title_ru
 
     if 'description' not in film_data or not film_data['description'].strip():
         return jsonify({'description': 'Заполните описание'}), 400

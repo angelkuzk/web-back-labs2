@@ -10,12 +10,13 @@ function fillFilmList() {
         for(let i = 0; i < films.length; i++) {
             let tr = document.createElement('tr');
 
-            let tdTitle = document.createElement('td');
             let tdTitleRus = document.createElement('td');
+            let tdTitle = document.createElement('td');
             let tdYear = document.createElement('td');
             let tdActions = document.createElement('td');
 
             tdTitleRus.innerText = films[i].title_ru;
+
             if (films[i].title && films[i].title !== films[i].title_ru) {
                 let originalSpan = document.createElement('span');
                 originalSpan.className = 'original-title';
@@ -24,6 +25,7 @@ function fillFilmList() {
             } else {
                 tdTitle.innerText = ''; 
             }
+
             tdYear.innerText = films[i].year;
 
             let editButton = document.createElement('button');
@@ -41,8 +43,8 @@ function fillFilmList() {
             tdActions.appendChild(editButton);
             tdActions.appendChild(delButton);
 
-            tr.appendChild(tdTitle);
             tr.appendChild(tdTitleRus);
+            tr.appendChild(tdTitle);
             tr.appendChild(tdYear);
             tr.appendChild(tdActions);
 
