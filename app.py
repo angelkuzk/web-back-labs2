@@ -1,17 +1,32 @@
-from flask import Flask, url_for, request, redirect, abort, render_template
+from flask import Flask, url_for, request, redirect, abort, render_template, session
 import os
 import datetime
+from os import path
+from db import db
+from db.models import User, Article
 from dotenv import load_dotenv
-from models import db, Office
 
 app = Flask(__name__)
 
 load_dotenv()
 
 app.secret_key = os.getenv('SECRET_KEY', 'default-secret-key')
-app.config['DB_TYPE'] = os.getenv('DB_TYPE', 'sqlite')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///offices.db'
+db_type = os.getenv('DB_TYPE', 'sqlite')
+
+if db_type == 'postgres':
+    db_user = os.getenv('DB_USER', 'angelina_kuznetosva_orm')
+    db_password = os.getenv('DB_PASSWORD', '123')
+    db_host = os.getenv('DB_HOST', 'localhost')
+    db_name = os.getenv('DB_NAME', 'angelina_kuznetosva_orm')
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{db_user}:{db_password}@{db_host}/{db_name}'
+else:
+
+    base_dir = path.dirname(path.abspath(__file__))
+    db_path = path.join(base_dir, 'angelina_kuznetosva_orm.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 
 db.init_app(app)
 
@@ -30,22 +45,6 @@ app.register_blueprint(lab7)
 app.register_blueprint(lab8)
 
 access_log = []
-
-with app.app_context():
-    db.create_all()
-
-    if Office.query.count() == 0:
-        offices_data = []
-        for i in range(1, 11):
-            offices_data.append(Office(
-                number=i,
-                tenant='',
-                price=900 + i % 3 * 100
-            ))
-        
-        db.session.add_all(offices_data)
-        db.session.commit()
-        print("База данных инициализирована с офисами")
 
 
 @app.route('/test_favicon')
