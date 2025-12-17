@@ -21,6 +21,7 @@ def login():
     
     login_form = request.form.get('login')
     password_form = request.form.get('password')
+    remember_me = request.form.get('remember_me') == 'on'
     
     if not login_form or not login_form.strip():
         return render_template('login.html', error='Введите логин!')
@@ -30,7 +31,7 @@ def login():
     user = User.query.filter_by(login=login_form).first()
     
     if user and check_password_hash(user.password, password_form):
-        login_user(user, remember=False)
+        login_user(user, remember=remember_me)
         return redirect('/lab8/')
     
     return render_template('login.html', error='Ошибка входа: логин и/или пароль неверны')
