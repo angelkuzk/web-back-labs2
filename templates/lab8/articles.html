@@ -3,52 +3,97 @@
 {% block lab %}Лабораторная работа 8{% endblock %}
 
 {% block main %}
-<div class="lab8-container">
-    <h1 class="lab8-header">Список статей</h1>
+<div style="max-width: 800px; margin: 0 auto;">
+    <h1>Список статей</h1>
+    
+    <div style="margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 5px;">
+        <form method="get" action="/lab8/articles">
+            <div style="display: flex; gap: 10px;">
+                <input type="text" name="search" value="{{ search_query }}" 
+                       placeholder="Поиск по статьям..." 
+                       style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                <button type="submit" style="padding: 8px 16px; background: #c98ba6; color: white; border: none; border-radius: 4px;">
+                    Найти
+                </button>
+                {% if search_query %}
+                    <a href="/lab8/articles" style="padding: 8px 16px; background: #6c757d; color: white; text-decoration: none; border-radius: 4px;">
+                        Сбросить
+                    </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
     
     {% if articles %}
-        <div class="articles-list">
-            {% for article in articles %}
-                <div class="article-card">
-                    <h3 class="article-title">{{ article.title }}</h3>
-                    
-                    <div class="article-meta">
-                        <span><strong>Автор:</strong> {{ article.author.login }}</span>
-                        <span style="background: {% if article.is_public %}#28a745{% else %}#6c757d{% endif %}; color: white;">
-                            {{ 'Публичная' if article.is_public else 'Приватная' }}
+        {% for article in articles %}
+            <div style="border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; border-radius: 8px; background: white;">
+                <h3 style="margin-top: 0; color: #333;">{{ article.title }}</h3>
+                
+                <div style="margin: 10px 0; font-size: 14px; color: #666;">
+                    <strong>Автор:</strong> {{ article.author.login }}
+                    {% if current_user.is_authenticated and article.user_id == current_user.id %}
+                        <span style="background: #e9ecef; padding: 2px 8px; border-radius: 3px; margin-left: 10px; font-size: 12px;">
+                            Ваша статья
                         </span>
-                    </div>
-                    
-                    <div class="article-content">
-                        {{ article.article_text[:200] }}
-                        {% if article.article_text|length > 200 %}...{% endif %}
-                    </div>
-                    
-                    {% if article.user_id == current_user.id %}
-                        <div class="article-actions">
-                            <a href="/lab8/edit/{{ article.id }}" class="lab8-btn btn-warning">Редактировать</a>
-                            <form action="/lab8/delete/{{ article.id }}" method="post" style="display: inline;">
-                                <button type="submit" 
-                                        class="lab8-btn btn-danger"
-                                        onclick="return confirm('Вы уверены, что хотите удалить эту статью?')">
-                                    Удалить
-                                </button>
-                            </form>
-                        </div>
                     {% endif %}
                 </div>
-            {% endfor %}
-        </div>
+                
+                <div style="margin: 15px 0; line-height: 1.6;">
+                    {{ article.article_text[:200] }}
+                    {% if article.article_text|length > 200 %}...{% endif %}
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <span style="background: {% if article.is_public %}#28a745{% else %}#6c757d{% endif %}; 
+                          color: white; padding: 4px 10px; border-radius: 3px; font-size: 12px;">
+                        {{ 'Публичная' if article.is_public else 'Приватная' }}
+                    </span>
+                </div>
+                
+                {% if current_user.is_authenticated and article.user_id == current_user.id %}
+                    <div style="margin-top: 15px;">
+                        <a href="/lab8/edit/{{ article.id }}" 
+                           style="padding: 6px 12px; background: #c98ba6; color: white; 
+                                  text-decoration: none; border-radius: 3px; margin-right: 5px;">
+                            Редактировать
+                        </a>
+                        <form action="/lab8/delete/{{ article.id }}" method="post" style="display: inline;">
+                            <button type="submit" onclick="return confirm('Вы уверены, что хотите удалить эту статью?')"
+                                    style="padding: 6px 12px; background: #dc3545; color: white; 
+                                           border: none; border-radius: 3px; cursor: pointer;">
+                                Удалить
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
     {% else %}
-        <div class="empty-state">
-            <p>Статей пока нет.</p>
-            <p>Создайте свою первую статью!</p>
+        <div style="text-align: center; padding: 40px; color: #666; border: 1px dashed #ddd; border-radius: 8px;">
+            {% if search_query %}
+                <p>По запросу "{{ search_query }}" ничего не найдено.</p>
+            {% else %}
+                <p>Статей пока нет.</p>
+                {% if current_user.is_authenticated %}
+                    <p>Создайте свою первую статью!</p>
+                {% else %}
+                    <p>Войдите или зарегистрируйтесь, чтобы создать статью.</p>
+                {% endif %}
+            {% endif %}
         </div>
     {% endif %}
     
-    <div style="text-align: center; margin-top: 30px;">
-        <a href="/lab8/create" class="lab8-btn btn-primary">Создать новую статью</a>
-        <a href="/lab8/" class="lab8-btn btn-secondary">На главную</a>
+    <div style="margin-top: 30px; text-align: center;">
+        {% if current_user.is_authenticated %}
+            <a href="/lab8/create" style="display: inline-block; padding: 12px 24px; 
+                   background: #c98ba6; color: white; text-decoration: none; border-radius: 5px;">
+                Создать статью
+            </a>
+        {% endif %}
+        <a href="/lab8/" style="display: inline-block; padding: 12px 24px; background: #6c757d; 
+               color: white; text-decoration: none; border-radius: 5px; margin-left: 10px;">
+            На главную
+        </a>
     </div>
 </div>
 {% endblock %}

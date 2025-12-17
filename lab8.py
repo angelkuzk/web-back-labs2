@@ -69,12 +69,29 @@ def register():
     return redirect('/lab8/')
 
 @lab8.route('/articles')  
-@login_required
+
 def articles():
-    articles_list = Article.query.filter(
-        (Article.user_id == current_user.id) | (Article.is_public == True)
-    ).order_by(Article.id.desc()).all()
-    return render_template('lab8/articles.html', articles=articles_list)
+    search_query = request.args.get('search', '').strip().lower()  
+    
+    if not current_user.is_authenticated:
+        articles_list = Article.query.filter_by(is_public=True).all()
+    else:
+        articles_list = Article.query.filter(
+            (Article.user_id == current_user.id) | (Article.is_public == True)
+        ).all()
+    
+    if search_query:
+        filtered_articles = []
+        for article in articles_list:
+            if (search_query in article.title.lower() or 
+                search_query in article.article_text.lower()):
+                filtered_articles.append(article)
+        articles_list = filtered_articles
+    
+    return render_template('lab8/articles.html', 
+                          articles=articles_list, 
+                          search_query=search_query)
+
 
 @lab8.route('/create', methods=['GET', 'POST'])
 @login_required
@@ -130,7 +147,7 @@ def edit_article(article_id):
     article.is_public = is_public
     
     db.session.commit()
-    
+
     return redirect('/lab8/articles')
 
 @lab8.route('/delete/<int:article_id>', methods=['POST'])

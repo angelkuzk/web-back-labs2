@@ -3,31 +3,48 @@
 {% block lab %}Лабораторная работа 8{% endblock %}
 
 {% block main %}
+<div style="max-width: 600px; margin: 0 auto;"></div>
     <h1>База знаний</h1>
-    <div style="background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px;">
+    
+    <div style="background: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
         <strong>Пользователь:</strong> {{ username }}
         {% if username != 'anonymous' %}
             <a href="/lab8/logout" style="float: right; color: #dc3545;">Выйти</a>
         {% endif %}
     </div>
     
-    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
-        <a href="/lab8/login" style="display: block; padding: 10px; background: #c98ba6; color: white; text-decoration: none; border-radius: 5px; text-align: center;">
-            Войти
-        </a>
-        
-        <a href="/lab8/register" style="display: block; padding: 10px; background: #c98ba6; color: white; text-decoration: none; border-radius: 5px; text-align: center;">
-            Зарегистрироваться
-        </a>
-        
-        <a href="/lab8/articles" style="display: block; padding: 10px; background: #c98ba6; color: white; text-decoration: none; border-radius: 5px; text-align: center;">
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+        <a href="/lab8/articles" style="display: block; padding: 10px; background: #c98ba6; 
+               color: white; text-decoration: none; border-radius: 5px; text-align: center;">
             Список статей
         </a>
         
-        {% if username != 'anonymous' %}
-            <a href="/lab8/create" style="display: block; padding: 10px; background: #c98ba6; color: white; text-decoration: none; border-radius: 5px; text-align: center;">
+        {% if username == 'anonymous' %}
+            <a href="/lab8/login" style="display: block; padding: 10px; background: #c98ba6; 
+                   color: white; text-decoration: none; border-radius: 5px; text-align: center;">
+                Войти
+            </a>
+            
+            <a href="/lab8/register" style="display: block; padding: 10px; background: #c98ba6; 
+                   color: white; text-decoration: none; border-radius: 5px; text-align: center;">
+                Зарегистрироваться
+            </a>
+        {% else %}
+            <a href="/lab8/create" style="display: block; padding: 10px; background: #c98ba6; 
+                   color: white; text-decoration: none; border-radius: 5px; text-align: center;">
                 Создать статью
             </a>
         {% endif %}
     </div>
+    
+    <div style="margin-top: 30px; background: #e9ecef; padding: 15px; border-radius: 5px; font-size: 14px;">
+        <h3 style="margin-top: 0;">Возможности:</h3>
+        <ul>
+            <li>Все пользователи могут просматривать публичные статьи</li>
+            <li>Авторизованные пользователи могут создавать статьи</li>
+            <li>Авторы могут редактировать и удалять свои статьи</li>
+            <li>Доступен поиск по статьям (регистронезависимый)</li>
+        </ul>
+    </div>
+</div>
 {% endblock %}
