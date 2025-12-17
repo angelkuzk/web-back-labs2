@@ -4,6 +4,7 @@ import datetime
 from os import path
 from db import db
 from db.models import User, Article
+from flask_login import LoginManager
 from dotenv import load_dotenv
 
 app = Flask(__name__)
@@ -29,6 +30,13 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
 db.init_app(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'lab8.login'  
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 from lab3 import lab3
 from lab4 import lab4
@@ -42,7 +50,7 @@ app.register_blueprint(lab4)
 app.register_blueprint(lab5)
 app.register_blueprint(lab6)
 app.register_blueprint(lab7)
-app.register_blueprint(lab8)
+app.register_blueprint(lab8, url_prefix='/lab8')
 
 access_log = []
 
