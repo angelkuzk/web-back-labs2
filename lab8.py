@@ -100,3 +100,32 @@ def create():
     db.session.commit()
     
     return redirect('/lab8/articles')
+
+
+@lab8.route('/edit/<int:article_id>', methods=['GET', 'POST'])
+@login_required
+def edit_article(article_id):
+    article = Article.query.get_or_404(article_id)
+    
+    if article.user_id != current_user.id:
+        return redirect('/lab8/articles')
+    
+    if request.method == 'GET':
+        return render_template('lab8/edit.html', article=article)
+    
+    title = request.form.get('title')
+    article_text = request.form.get('article_text')
+    is_public = request.form.get('is_public') == 'on'
+    
+    if not title or not title.strip():
+        return render_template('lab8/edit.html', article=article, error='Введите заголовок статьи!')
+    if not article_text or not article_text.strip():
+        return render_template('lab8/edit.html', article=article, error='Введите текст статьи!')
+    
+    article.title = title
+    article.article_text = article_text
+    article.is_public = is_public
+    
+    db.session.commit()
+    
+    return redirect('/lab8/articles')
