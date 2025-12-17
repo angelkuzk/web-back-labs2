@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 8{% endblock %}
+
+{% block main %}
+<div class="lab8-container">
+    <h1 class="lab8-header">Список статей</h1>
+    
+    {% if articles %}
+        <div class="articles-list">
+            {% for article in articles %}
+                <div class="article-card">
+                    <h3 class="article-title">{{ article.title }}</h3>
+                    
+                    <div class="article-meta">
+                        <span><strong>Автор:</strong> {{ article.author.login }}</span>
+                        <span style="background: {% if article.is_public %}#28a745{% else %}#6c757d{% endif %}; color: white;">
+                            {{ 'Публичная' if article.is_public else 'Приватная' }}
+                        </span>
+                    </div>
+                    
+                    <div class="article-content">
+                        {{ article.article_text[:200] }}
+                        {% if article.article_text|length > 200 %}...{% endif %}
+                    </div>
+                    
+                    {% if article.user_id == current_user.id %}
+                        <div class="article-actions">
+                            <a href="/lab8/edit/{{ article.id }}" class="lab8-btn btn-warning">Редактировать</a>
+                            <form action="/lab8/delete/{{ article.id }}" method="post" style="display: inline;">
+                                <button type="submit" 
+                                        class="lab8-btn btn-danger"
+                                        onclick="return confirm('Вы уверены, что хотите удалить эту статью?')">
+                                    Удалить
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>Статей пока нет.</p>
+            <p>Создайте свою первую статью!</p>
+        </div>
+    {% endif %}
+    
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/lab8/create" class="lab8-btn btn-primary">Создать новую статью</a>
+        <a href="/lab8/" class="lab8-btn btn-secondary">На главную</a>
+    </div>
+</div>
+{% endblock %}

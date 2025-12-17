@@ -71,7 +71,10 @@ def register():
 @lab8.route('/articles')  
 @login_required
 def articles():
-    return "список статей"
+    articles_list = Article.query.filter(
+        (Article.user_id == current_user.id) | (Article.is_public == True)
+    ).order_by(Article.id.desc()).all()
+    return render_template('lab8/articles.html', articles=articles_list)
 
 @lab8.route('/create', methods=['GET', 'POST'])
 @login_required
@@ -98,7 +101,7 @@ def create():
     
     db.session.add(new_article)
     db.session.commit()
-    
+
     return redirect('/lab8/articles')
 
 
@@ -126,6 +129,19 @@ def edit_article(article_id):
     article.article_text = article_text
     article.is_public = is_public
     
+    db.session.commit()
+    
+    return redirect('/lab8/articles')
+
+@lab8.route('/delete/<int:article_id>', methods=['POST'])
+@login_required
+def delete_article(article_id):
+    article = Article.query.get_or_404(article_id)
+
+    if article.user_id != current_user.id:
+        return redirect('/lab8/articles')
+    
+    db.session.delete(article)
     db.session.commit()
     
     return redirect('/lab8/articles')
