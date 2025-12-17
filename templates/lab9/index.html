@@ -20,25 +20,89 @@
         padding: 20px;
     }
 
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
     .title {
         color: #ff0066;
-        margin: 0 0 20px;
-        font-size: 3em;
+        font-size: 2.8em;
         font-weight: bold;
         padding: 10px;
         letter-spacing: 1px;
+        flex-grow: 1;
+        text-align: left;
+        min-width: 300px;
+    }
+
+    .auth-panel {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 15px 25px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(255, 93, 143, 0.3);
+        border: 2px solid #ffafcc;
+        min-width: 250px;
+        flex-shrink: 0;
+    }
+
+    .auth-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .auth-text {
+        font-weight: bold;
+        color: #ff5d8f;
+        font-size: 16px;
+        white-space: nowrap;
+    }
+
+    .auth-btn {
+        padding: 8px 18px;
+        background: linear-gradient(45deg, #ff5d8f, #ff97b7);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s;
+        font-weight: bold;
+        min-width: 80px;
+        white-space: nowrap;
+    }
+
+    .auth-btn:hover {
+        background: linear-gradient(45deg, #ff4785, #ff7aa8);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(255, 93, 143, 0.4);
+    }
+
+    .santa-btn {
+        background: linear-gradient(45deg, #ff0066, #ff2d70);
+    }
+
+    .santa-btn:hover {
+        background: linear-gradient(45deg, #e6005c, #ff1a66);
     }
 
     .counters {
         background: rgba(255, 255, 255, 0.9);
         padding: 25px 50px;
         border-radius: 20px;
-        margin-bottom: 40px;
+        margin: 30px auto;
         color: #ff5d8f;
         display: inline-block;
         font-size: 1.3em;
         box-shadow: 0 6px 20px rgba(255, 93, 143, 0.3);
         border: 3px solid #ffafcc;
+        max-width: 500px;
     }
 
     .counter-item {
@@ -56,6 +120,14 @@
         padding: 8px 15px;
         border-radius: 10px;
         display: inline-block;
+    }
+    
+    .restricted-note {
+        color: #8e44ad;
+        font-size: 0.9em;
+        margin-top: 5px;
+        font-style: italic;
+        margin-bottom: 20px;
     }
 
     .area {
@@ -83,6 +155,12 @@
     .present.opened {
         cursor: default;
         filter: brightness(1.1) drop-shadow(0 5px 10px rgba(255, 93, 143, 0.3));
+    }
+   
+    .present.restricted {
+        border: 2px solid #ff97b7;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #ff97b7;
     }
 
     .present img {
@@ -148,31 +226,6 @@
         color: #ffebf3;
     }
 
-    .reset-btn {
-        margin-top: 30px;
-        padding: 18px 40px;
-        background: linear-gradient(45deg, #ff5d8f, #ff97b7);
-        color: white;
-        border: none;
-        border-radius: 12px;
-        cursor: pointer;
-        font-size: 1.3em;
-        font-weight: bold;
-        transition: all 0.3s;
-        box-shadow: 0 6px 15px rgba(255, 93, 143, 0.4);
-        letter-spacing: 1px;
-    }
-
-    .reset-btn:hover {
-        background: linear-gradient(45deg, #ff4785, #ff7aa8);
-        transform: translateY(-3px) scale(1.05);
-        box-shadow: 0 10px 25px rgba(255, 93, 143, 0.6);
-    }
-
-    .reset-btn:active {
-        transform: translateY(1px);
-    }
-
     h2 {
         color: #ffffff;
         font-size: 2.2em;
@@ -204,23 +257,47 @@
 </style>
 
 <div class="main">
-    <h1 class="title">💖 Подарки с Любовью 💖</h1>
+    <div class="header-container">
+        <h1 class="title">💖 Подарки с Любовью 💖</h1>
+        
+        <div class="auth-panel">
+            {% if is_authenticated %}
+                <div class="auth-info">
+                    <span class="auth-text">👤 {{ username }}</span>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="auth-btn" onclick="logout()">Выйти</button>
+                        <button class="auth-btn santa-btn" onclick="santaAction()">🎅 Дед Мороз</button>
+                    </div>
+                </div>
+            {% else %}
+                <div class="auth-info">
+                    <span class="auth-text">👤 Гость</span>
+                    <button class="auth-btn" onclick="window.location.href='{{ url_for('lab9.login') }}'">
+                        Войти
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
     
     <div class="counters">
         <div class="counter-item">✨ Открыто: <span id="open-count">{{ open_count }}</span> ✨</div>
         <div class="counter-item">🌸 Осталось: <span id="left-count">{{ left_count }}</span> 🌸</div>
         <div class="limit-note">💝 Можно открыть только 3 подарка! 💝</div>
     </div>
+    
+    {% if not is_authenticated %}
+        <div class="restricted-note">🎅 Некоторые подарки доступны только авторизованным пользователям!</div>
+    {% endif %}
 
     <div class="area" id="area"></div>
-    
-    <button class="reset-btn" onclick="resetGame()">🔄 Начать заново 🔄</button>
+
 </div>
 
 <div class="popup" id="popup">
     <div class="popup-content">
         <span class="close-btn" onclick="hidePopup()">×</span>
-        <h2>🎀 Поздравление! 🎀</h2>
+        <h2>🎀 Поздравляю! 🎀</h2>
         <div id="gift-holder"></div>
         <p id="greeting-text" style="color: #fff; font-size: 1.2em; line-height: 1.5; margin: 20px 0;"></p>
     </div>
@@ -230,6 +307,8 @@
     const pos = {{ pos|tojson }};
     const states = {{ states|tojson }};
     const boxImages = {{ boxes|tojson }};
+    const restrictedGifts = {{ restricted_gifts|tojson }};
+    const isAuthenticated = {{ is_authenticated|tojson }};
     
     function loadPresents() {
         const area = document.getElementById('area');
@@ -238,6 +317,9 @@
         pos.forEach((p, idx) => {
             const present = document.createElement('div');
             present.className = `present ${states[idx] ? 'opened' : ''}`;
+            if (restrictedGifts.includes(idx) && !states[idx]) {
+                present.classList.add('restricted');
+            }
             present.style.top = p.top;
             present.style.left = p.left;
             present.dataset.id = idx;
@@ -250,6 +332,10 @@
             } else {
                 img.src = "{{ url_for('static', filename='lab9/') }}" + boxImages[idx];
                 img.alt = "Закрытая коробка " + (idx + 1);
+                
+                if (restrictedGifts.includes(idx) && !isAuthenticated) {
+                    img.style.opacity = '0.7';
+                }
             }
             
             present.appendChild(img);
@@ -265,7 +351,6 @@
         const present = event.currentTarget;
         const boxId = parseInt(present.dataset.id);
         
-        console.log('Открываем подарок:', boxId);
         
         fetch('{{ url_for("lab9.open_box") }}', {
             method: 'POST',
@@ -275,13 +360,10 @@
             body: JSON.stringify({ box_id: boxId })
         })
         .then(response => {
-            console.log('Статус ответа:', response.status);
             return response.json().then(data => ({ status: response.status, data }));
         })
         .then(({ status, data }) => {
-            console.log('Ответ сервера:', data);
-            
-            if (status === 200) {
+            if (status === 200 || status === 403) {
                 if (data.ok) {
                     document.getElementById('open-count').textContent = data.open_count;
                     document.getElementById('left-count').textContent = data.left_count;
@@ -295,7 +377,13 @@
                     
                     showPopup(data.greeting, data.gift);
                 } else {
-                    alert("💔 " + (data.msg || 'Неизвестная ошибка'));
+                    if (data.requires_auth) {
+                        if (confirm(data.msg + '\n\nПерейти на страницу авторизации?')) {
+                            window.location.href = '{{ url_for("lab9.login") }}';
+                        }
+                    } else {
+                        alert(data.msg || 'Неизвестная ошибка');
+                    }
                 }
             } else {
                 alert('❌ Ошибка сервера: ' + (data.msg || 'Неизвестная ошибка'));
@@ -322,7 +410,7 @@
     }
     
     function createConfetti() {
-        const colors = ['#ff5d8f', '#ff97b7', '#ffafcc', '#ffc8dd', '#ffb6c1', '#ffffff'];
+        const colors = ['#ff5d8f', '#ff97b7', '#ffafcc, #ffc8dd', '#ffb6c1', '#ffffff'];
         const confettiCount = 100;
         
         for (let i = 0; i < confettiCount; i++) {
@@ -356,9 +444,27 @@
         document.getElementById('popup').style.display = 'none';
     }
     
-    function resetGame() {
-        if (confirm('🌸 Начать игру заново? Все открытые подарки пропадут. 🌸')) {
-            fetch('{{ url_for("lab9.reset") }}', {
+    function logout() {
+        fetch('{{ url_for("lab9.logout") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка при выходе:', error);
+        });
+    }
+    
+    function santaAction() {
+        if (confirm('🎅 Дед Мороз наполнит все коробки заново! Продолжить?')) {
+            fetch('{{ url_for("lab9.santa") }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -367,14 +473,15 @@
             .then(response => response.json())
             .then(data => {
                 if (data.ok) {
+                    alert(data.msg);
                     location.reload();
                 } else {
-                    alert('💔 Ошибка при сбросе игры');
+                    alert(data.msg || 'Ошибка при вызове Деда Мороза');
                 }
             })
             .catch(error => {
                 console.error('Ошибка:', error);
-                alert('💔 Ошибка при сбросе игры');
+                alert('💔 Ошибка при вызове Деда Мороза');
             });
         }
     }
@@ -394,7 +501,6 @@
             }
         });
         
-        console.log('🎮 Игра загружена. Состояние:', states);
     });
 </script>
 {% endblock %}

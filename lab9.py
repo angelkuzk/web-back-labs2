@@ -1,7 +1,13 @@
-from flask import Blueprint, render_template, session, jsonify, request
+from flask import Blueprint, render_template, session, jsonify, request, redirect, url_for
 import random
 
 lab9 = Blueprint('lab9', __name__)
+
+USERS = {
+    'admin': '123',
+    'user1': 'pas1',
+    'user2': 'pas2'
+}
 
 greetings = [
     "Искренних чувств и настоящей дружбы!",
@@ -25,6 +31,8 @@ boxes = [
     "box1.png", "box2.png", "box3.png", "box4.png", "box5.png",
     "box6.png", "box7.png", "box8.png", "box9.png", "box10.png"
 ]
+
+RESTRICTED_GIFTS = [7, 8, 9]  
 
 def init_session():
     if 'uid' not in session:
@@ -85,13 +93,40 @@ def main():
     states = session.get('states', [False] * 10)
     open_count = len(session.get('open', []))
     left_count = 10 - sum(states)
+    is_authenticated = session.get('authenticated', False)
+    username = session.get('username', '')
     
     return render_template('lab9/index.html',
                          pos=session['pos'],
                          states=states,
                          boxes=boxes,
                          open_count=open_count,
-                         left_count=left_count)
+                         left_count=left_count,
+                         is_authenticated=is_authenticated,
+                         username=username,
+                         restricted_gifts=RESTRICTED_GIFTS)
+
+@lab9.route('/lab9/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('lab9/login.html')
+    
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+    
+    if username in USERS and USERS[username] == password:
+        session['authenticated'] = True
+        session['username'] = username
+        return jsonify({'ok': True, 'msg': 'Авторизация успешна'})
+    else:
+        return jsonify({'ok': False, 'msg': 'Неверное имя пользователя или пароль'})
+
+@lab9.route('/lab9/logout', methods=['POST'])
+def logout():
+    session.pop('authenticated', None)
+    session.pop('username', None)
+    return jsonify({'ok': True, 'msg': 'Выход выполнен'})
 
 @lab9.route('/lab9/open', methods=['POST'])
 def open_box():
@@ -111,6 +146,13 @@ def open_box():
         
         if box_id < 0 or box_id >= 10:
             return jsonify({'ok': False, 'msg': 'Некорректный номер подарка'}), 400
+
+        if box_id in RESTRICTED_GIFTS and not session.get('authenticated', False):
+            return jsonify({
+                'ok': False, 
+                'msg': 'Этот подарок доступен только для авторизованных пользователей. Пожалуйста, войдите в систему.',
+                'requires_auth': True
+            }), 403
         
         states = session.get('states', [False] * 10)
         open_list = session.get('open', [])
@@ -156,13 +198,17 @@ def status():
         'left_count': left_count
     })
 
-@lab9.route('/lab9/reset', methods=['POST'])
-def reset():
-    session.pop('open', None)
-    session.pop('states', None)
-    session.pop('pos', None)
+@lab9.route('/lab9/santa', methods=['POST'])
+def santa():
+    if not session.get('authenticated', False):
+        return jsonify({'ok': False, 'msg': 'Только авторизованные пользователи могут использовать эту функцию'}), 403
+    
+    session['open'] = []
+    session['states'] = [False] * 10
+    
+    generate_positions()
     
     return jsonify({
         'ok': True,
-        'msg': 'Игра сброшена'
+        'msg': 'Дед Мороз наполнил все подарки заново!'
     })
