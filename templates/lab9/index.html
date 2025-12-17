@@ -35,7 +35,7 @@
     .auth-panel {
         position: absolute;
         top: 20px;
-        right: -50px; /* Сдвигаем еще правее */
+        right: -80px; /* Сдвигаем еще больше правее */
         background: rgba(255, 255, 255, 0.95);
         padding: 15px 25px;
         border-radius: 15px;
@@ -43,7 +43,6 @@
         border: 2px solid #ffafcc;
         min-width: 250px;
         z-index: 100;
-        transform: translateX(20px); /* Дополнительный сдвиг */
     }
 
     .auth-info {
@@ -163,6 +162,9 @@
         width: 100%;
         height: 100%;
         object-fit: contain;
+        /* Оптимизация загрузки изображений */
+        content-visibility: auto;
+        will-change: transform, opacity;
     }
 
     .present:hover:not(.opened) {
@@ -203,6 +205,8 @@
         object-fit: contain;
         display: block;
         filter: drop-shadow(0 8px 20px rgba(255, 255, 255, 0.6));
+        /* Предзагрузка GIF изображений */
+        content-visibility: auto;
     }
 
     .close-btn {
@@ -251,6 +255,14 @@
         animation-delay: calc(var(--i, 0) * 0.2s);
     }
 </style>
+
+<!-- Предзагрузка основных изображений -->
+<link rel="preload" href="{{ url_for('static', filename='lab9/opened.png') }}" as="image">
+<link rel="preload" href="{{ url_for('static', filename='lab9/box1.png') }}" as="image">
+<link rel="preload" href="{{ url_for('static', filename='lab9/box2.png') }}" as="image">
+<link rel="preload" href="{{ url_for('static', filename='lab9/box3.png') }}" as="image">
+<link rel="preload" href="{{ url_for('static', filename='lab9/box4.png') }}" as="image">
+<link rel="preload" href="{{ url_for('static', filename='lab9/box5.png') }}" as="image">
 
 <div class="main">
     <div class="auth-panel">
@@ -304,11 +316,29 @@
     const restrictedGifts = {{ restricted_gifts|tojson }};
     const isAuthenticated = {{ is_authenticated|tojson }};
     
+    // Кэш для предзагрузки изображений
+    const imageCache = new Map();
+    
+    function preloadImages() {
+        // Предзагрузка открытой коробки
+        const openedBox = new Image();
+        openedBox.src = "{{ url_for('static', filename='lab9/opened.png') }}";
+        imageCache.set('opened', openedBox);
+        
+        // Предзагрузка всех коробок
+        boxImages.forEach((imgName, idx) => {
+            const img = new Image();
+            img.src = "{{ url_for('static', filename='lab9/') }}" + imgName;
+            imageCache.set(imgName, img);
+        });
+    }
+    
     function loadPresents() {
         const area = document.getElementById('area');
         area.innerHTML = '';
         
-        pos.forEach((p, idx) => {
+        // Создаем все элементы сразу
+        const presentElements = pos.map((p, idx) => {
             const present = document.createElement('div');
             present.className = `present ${states[idx] ? 'opened' : ''}`;
             if (restrictedGifts.includes(idx) && !states[idx]) {
@@ -320,6 +350,7 @@
             present.style.setProperty('--i', idx);
             
             const img = document.createElement('img');
+            img.loading = "lazy"; // Ленивая загрузка
             if (states[idx]) {
                 img.src = "{{ url_for('static', filename='lab9/opened.png') }}";
                 img.alt = "Открытая коробка";
@@ -333,18 +364,26 @@
             }
             
             present.appendChild(img);
-            area.appendChild(present);
             
             if (!states[idx]) {
                 present.addEventListener('click', openPresent);
             }
+            
+            return present;
         });
+        
+        // Добавляем все элементы за один раз (оптимизация производительности)
+        const fragment = document.createDocumentFragment();
+        presentElements.forEach(present => fragment.appendChild(present));
+        area.appendChild(fragment);
     }
     
     function openPresent(event) {
         const present = event.currentTarget;
         const boxId = parseInt(present.dataset.id);
         
+        // Блокируем повторные клики
+        present.style.pointerEvents = 'none';
         
         fetch('{{ url_for("lab9.open_box") }}', {
             method: 'POST',
@@ -364,13 +403,21 @@
                     
                     present.classList.add('opened');
                     const img = present.querySelector('img');
-                    img.src = "{{ url_for('static', filename='lab9/opened.png') }}";
+                    
+                    // Используем кэшированное изображение
+                    const cachedImg = imageCache.get('opened');
+                    if (cachedImg && cachedImg.complete) {
+                        img.src = cachedImg.src;
+                    } else {
+                        img.src = "{{ url_for('static', filename='lab9/opened.png') }}";
+                    }
                     img.alt = "Открытая коробка";
                     
                     present.removeEventListener('click', openPresent);
                     
                     showPopup(data.greeting, data.gift);
                 } else {
+                    present.style.pointerEvents = 'auto';
                     if (data.requires_auth) {
                         if (confirm(data.msg + '\n\nПерейти на страницу авторизации?')) {
                             window.location.href = '{{ url_for("lab9.login") }}';
@@ -380,11 +427,13 @@
                     }
                 }
             } else {
+                present.style.pointerEvents = 'auto';
                 alert('❌ Ошибка сервера: ' + (data.msg || 'Неизвестная ошибка'));
             }
         })
         .catch(error => {
             console.error('Ошибка при открытии подарка:', error);
+            present.style.pointerEvents = 'auto';
             alert('🌐 Ошибка сети. Проверьте подключение к интернету.');
         });
     }
@@ -395,23 +444,38 @@
         const holder = document.getElementById('gift-holder');
         
         text.textContent = "💌 " + greeting + " 💌";
-        holder.innerHTML = `<img src="{{ url_for('static', filename='lab9/gifts/') }}${gift}" class="gift-img" alt="Подарок">`;
         
-        popup.style.display = 'flex';
+        // Создаем изображение заранее
+        const giftImg = new Image();
+        giftImg.src = "{{ url_for('static', filename='lab9/gifts/') }}" + gift;
+        giftImg.className = 'gift-img';
+        giftImg.alt = "Подарок";
         
-        // Добавляем конфетти
-        createConfetti();
+        // Ждем загрузки изображения перед показом
+        giftImg.onload = function() {
+            holder.innerHTML = '';
+            holder.appendChild(giftImg);
+            popup.style.display = 'flex';
+            createConfetti();
+        };
+        
+        // На случай если изображение уже в кэше
+        giftImg.onerror = function() {
+            holder.innerHTML = `<img src="{{ url_for('static', filename='lab9/gifts/') }}${gift}" class="gift-img" alt="Подарок">`;
+            popup.style.display = 'flex';
+            createConfetti();
+        };
     }
     
     function createConfetti() {
         const colors = ['#ff5d8f', '#ff97b7', '#ffafcc', '#ffc8dd', '#ffb6c1', '#ffffff'];
-        const confettiCount = 100;
+        const confettiCount = 50; // Уменьшил количество для производительности
         
         for (let i = 0; i < confettiCount; i++) {
             const confetti = document.createElement('div');
             confetti.style.position = 'fixed';
-            confetti.style.width = '10px';
-            confetti.style.height = '10px';
+            confetti.style.width = '8px';
+            confetti.style.height = '8px';
             confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
             confetti.style.borderRadius = '50%';
             confetti.style.left = Math.random() * 100 + 'vw';
@@ -419,6 +483,7 @@
             confetti.style.zIndex = '9999';
             confetti.style.opacity = '0.8';
             confetti.style.pointerEvents = 'none';
+            confetti.style.willChange = 'transform, opacity';
             
             document.body.appendChild(confetti);
             
@@ -426,7 +491,7 @@
                 { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
                 { transform: `translateY(${window.innerHeight + 100}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
             ], {
-                duration: Math.random() * 3000 + 2000,
+                duration: Math.random() * 2000 + 1500,
                 easing: 'cubic-bezier(0.215, 0.61, 0.355, 1)'
             });
             
@@ -481,6 +546,10 @@
     }
     
     document.addEventListener('DOMContentLoaded', () => {
+        // Начинаем предзагрузку изображений сразу
+        preloadImages();
+        
+        // Загружаем подарки
         loadPresents();
         
         document.getElementById('popup').addEventListener('click', (e) => {
@@ -494,7 +563,6 @@
                 hidePopup();
             }
         });
-        
     });
 </script>
 {% endblock %}
