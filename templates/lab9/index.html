@@ -18,36 +18,32 @@
         margin: 0 auto;
         text-align: center;
         padding: 20px;
-    }
-
-    .header-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
-        gap: 20px;
+        position: relative;
     }
 
     .title {
         color: #ff0066;
-        font-size: 2.8em;
+        font-size: 3em;
         font-weight: bold;
         padding: 10px;
         letter-spacing: 1px;
-        flex-grow: 1;
-        text-align: left;
-        min-width: 300px;
+        margin: 0 0 30px;
+        position: relative;
+        z-index: 1;
     }
 
     .auth-panel {
+        position: absolute;
+        top: 20px;
+        right: -50px; /* Сдвигаем еще правее */
         background: rgba(255, 255, 255, 0.95);
         padding: 15px 25px;
         border-radius: 15px;
         box-shadow: 0 4px 15px rgba(255, 93, 143, 0.3);
         border: 2px solid #ffafcc;
         min-width: 250px;
-        flex-shrink: 0;
+        z-index: 100;
+        transform: translateX(20px); /* Дополнительный сдвиг */
     }
 
     .auth-info {
@@ -257,28 +253,26 @@
 </style>
 
 <div class="main">
-    <div class="header-container">
-        <h1 class="title">💖 Подарки с Любовью 💖</h1>
-        
-        <div class="auth-panel">
-            {% if is_authenticated %}
-                <div class="auth-info">
-                    <span class="auth-text">👤 {{ username }}</span>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="auth-btn" onclick="logout()">Выйти</button>
-                        <button class="auth-btn santa-btn" onclick="santaAction()">🎅 Дед Мороз</button>
-                    </div>
+    <div class="auth-panel">
+        {% if is_authenticated %}
+            <div class="auth-info">
+                <span class="auth-text">👤 {{ username }}</span>
+                <div style="display: flex; gap: 10px;">
+                    <button class="auth-btn" onclick="logout()">Выйти</button>
+                    <button class="auth-btn santa-btn" onclick="santaAction()">🎅 Дед Мороз</button>
                 </div>
-            {% else %}
-                <div class="auth-info">
-                    <span class="auth-text">👤 Гость</span>
-                    <button class="auth-btn" onclick="window.location.href='{{ url_for('lab9.login') }}'">
-                        Войти
-                    </button>
-                </div>
-            {% endif %}
-        </div>
+            </div>
+        {% else %}
+            <div class="auth-info">
+                <span class="auth-text">👤 Гость</span>
+                <button class="auth-btn" onclick="window.location.href='{{ url_for('lab9.login') }}'">
+                    Войти
+                </button>
+            </div>
+        {% endif %}
     </div>
+
+    <h1 class="title">💖 Подарки с Любовью 💖</h1>
     
     <div class="counters">
         <div class="counter-item">✨ Открыто: <span id="open-count">{{ open_count }}</span> ✨</div>
@@ -410,7 +404,7 @@
     }
     
     function createConfetti() {
-        const colors = ['#ff5d8f', '#ff97b7', '#ffafcc, #ffc8dd', '#ffb6c1', '#ffffff'];
+        const colors = ['#ff5d8f', '#ff97b7', '#ffafcc', '#ffc8dd', '#ffb6c1', '#ffffff'];
         const confettiCount = 100;
         
         for (let i = 0; i < confettiCount; i++) {
