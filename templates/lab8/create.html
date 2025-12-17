@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 8{% endblock %}
+
+{% block main %}
+<div class="lab8-container">
+    <h1 class="lab8-header">Создание статьи</h1>
+    
+    <div class="article-form">
+        <form method="post">
+            <div class="form-group">
+                <label for="title">Заголовок:</label>
+                <input type="text" id="title" name="title" class="form-control" placeholder="Введите заголовок статьи" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="article_text">Текст статьи:</label>
+                <textarea id="article_text" name="article_text" class="form-control" rows="12" placeholder="Напишите содержание вашей статьи..." required></textarea>
+            </div>
+            
+            <div class="form-check">
+                <input type="checkbox" id="is_public" name="is_public" class="form-check-input">
+                <label for="is_public" class="form-check-label">Опубликовать статью (будут видеть другие пользователи)</label>
+            </div>
+            
+            {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+            
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="lab8-btn btn-success">Создать статью</button>
+                <a href="/lab8/articles" class="lab8-btn btn-secondary">К списку статей</a>
+                <a href="/lab8/" class="lab8-btn btn-secondary">На главную</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

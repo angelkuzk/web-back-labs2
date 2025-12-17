@@ -73,7 +73,30 @@ def register():
 def articles():
     return "список статей"
 
-@lab8.route('/create')  
+@lab8.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
-    return render_template('create.html')
+    if request.method == 'GET':
+        return render_template('lab8/create.html')
+    
+    title = request.form.get('title')
+    article_text = request.form.get('article_text')
+    is_public = request.form.get('is_public') == 'on'
+    
+    if not title or not title.strip():
+        return render_template('lab8/create.html', error='Введите заголовок статьи!')
+    if not article_text or not article_text.strip():
+        return render_template('lab8/create.html', error='Введите текст статьи!')
+    
+    new_article = Article(
+        title=title,
+        article_text=article_text,
+        is_public=is_public,
+        user_id=current_user.id,
+        likes=0
+    )
+    
+    db.session.add(new_article)
+    db.session.commit()
+    
+    return redirect('/lab8/articles')
